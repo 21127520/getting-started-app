@@ -12,7 +12,7 @@ pipeline {
             steps {
                 echo 'Building..'
                 script {
-                    docker.build("${DOCKERHUB_ACCOUNT}/${IMAGE_NAME}:your_tag")
+                    docker.build("${DOCKERHUB_ACCOUNT}/${IMAGE_NAME}:v1.0")
                 }
             }
         }
@@ -26,7 +26,7 @@ pipeline {
                 echo 'Deploying....'
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'DOCKER_CREDENTIAL_ID') {
-                        docker.image("${DOCKERHUB_ACCOUNT}/${IMAGE_NAME}:your_tag").push()
+                        docker.image("${DOCKERHUB_ACCOUNT}/${IMAGE_NAME}:v1.0").push()
                     }
                 }
             }
