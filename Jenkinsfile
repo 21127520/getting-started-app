@@ -4,7 +4,10 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building..'
+                script {
+                    dockerImage = docker.build("my-image:${env.BUILD_ID}")
+                    echo 'Building Docker Image..'
+                }
             }
         }
         stage('Test') {
@@ -16,6 +19,14 @@ pipeline {
             steps {
                 echo 'Deploying....'
             }
+        }
+    }
+    post {
+        success {
+            echo "SUCCESSFUL"
+        }
+        failure {
+            echo "FAILED"
         }
     }
 }
