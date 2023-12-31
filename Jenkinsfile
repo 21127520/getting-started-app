@@ -1,43 +1,54 @@
 pipeline {
-    agent any
 
-    environment {
-        DOCKER_CREDENTIAL_ID = '21127520_docker'
-        DOCKERHUB_ACCOUNT = '21127520'
-        IMAGE_NAME = '21127520-21127732'
+  agent none
+
+  environment {
+    DOCKER_IMAGE = "21127520/getting-started-app"
+  }
+
+  stages {
+    stage("Test") {
+      agent {
+          docker {
+            image 'python:3.8-slim-buster'
+            args '-u 0:0'
+          }
+      }
+      steps {
+        sh "pip install poetry"
+        sh "poetry install"
+        sh "poetry run pytest"
+      }
     }
 
-    stages {
-        stage('Build') {
-            steps {
-                echo 'Building..'
-                script {
-                    docker.build("${DOCKERHUB_ACCOUNT}/${IMAGE_NAME}:v1.0")
-                }
-            }
+    stage("build") {
+      agent { node {label 'main'}}
+      environment {
+        DOCKER_TAG="${GIT_BRANCH.tokenize('/').pop()}-${GIT_COMMIT.substring(0,7)}"
+      }
+      steps {
+        sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} . "
+        sh "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest"
+        sh "docker image ls | grep ${DOCKER_IMAGE}"
+        withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+            sh 'echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin'
+            sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
+            sh "docker push ${DOCKER_IMAGE}:latest"
         }
-        stage('Test') {
-            steps {
-                echo 'Testing..'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying....'
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'DOCKER_CREDENTIAL_ID') {
-                        docker.image("${DOCKERHUB_ACCOUNT}/${IMAGE_NAME}:v1.0").push()
-                    }
-                }
-            }
-        }
+
+        //clean to save disk
+        sh "docker image rm ${DOCKER_IMAGE}:${DOCKER_TAG}"
+        sh "docker image rm ${DOCKER_IMAGE}:latest"
+      }
     }
-    post {
-        success {
-            echo "SUCCESSFUL"
-        }
-        failure {
-            echo "FAILED"
-        }
+  }
+
+  post {
+    success {
+      echo "SUCCESSFUL"
     }
+    failure {
+      echo "FAILED"
+    }
+  }
 }
