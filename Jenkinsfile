@@ -9,7 +9,7 @@ pipeline {
   stages {
     stage("Test") {
       agent {
-          docker {
+          any {
             image 'python:3.8-slim-buster'
             args '-u 0:0'
           }
