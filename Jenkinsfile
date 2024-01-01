@@ -9,7 +9,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    echo 'Building Docker Image..'
+                    echo 'Building Docker Image...'
                     dockerImage = docker.build("my-image:${env.BUILD_ID}")
                 }
             }
