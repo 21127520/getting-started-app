@@ -1,12 +1,16 @@
 pipeline {
     agent any
 
+    environment {
+                HOME = "${env.WORKSPACE}"
+            }
+
     stages {
         stage('Build') {
             steps {
                 script {
-                    dockerImage = docker.build("my-image:${env.BUILD_ID}")
                     echo 'Building Docker Image..'
+                    dockerImage = docker.build("my-image:${env.BUILD_ID}")
                 }
             }
         }
