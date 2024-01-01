@@ -27,7 +27,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    echo 'Deploying...'
+                    echo 'Deploying....'
                     sh "docker rm -f my-app || true"
                     sh "docker run -d -p 8081:8081 --name=my-app 21127520/my-image:${env.BUILD_ID}"
                 }
