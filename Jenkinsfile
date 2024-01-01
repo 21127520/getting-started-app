@@ -28,8 +28,8 @@ pipeline {
             steps {
                 script {
                     echo 'Deploying...'
-                    sh "docker rm -f jenkins-server || true"
-                    sh "docker run -d -p 8080:8080 --name=jenkins-server 21127520/my-image:${env.BUILD_ID}"
+                    //sh "docker rm -f my-app || true"
+                    sh "docker run -d -p 8080:8080 --name=my-app 21127520/my-image:${env.BUILD_ID}"
                 }
             }
         }
