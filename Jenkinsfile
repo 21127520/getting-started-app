@@ -14,9 +14,9 @@ pipeline {
              steps {
                 script {
                     echo 'Publishing Docker Image...'
-                    sh "sudo docker login -u nhtlan21@clc.fitus.edu.vn -p 123456789"
-                    sh "sudo docker tag my-image:${env.BUILD_ID} nhtlan21@clc.fitus.edu.vn/my-image:${env.BUILD_ID}"
-                    sh "sudo docker push nhtlan21@clc.fitus.edu.vn/my-image:${env.BUILD_ID}"
+                    sh "docker login -u nhtlan21@clc.fitus.edu.vn -p 123456789"
+                    sh "docker tag my-image:${env.BUILD_ID} nhtlan21@clc.fitus.edu.vn/my-image:${env.BUILD_ID}"
+                    sh "docker push nhtlan21@clc.fitus.edu.vn/my-image:${env.BUILD_ID}"
                 }
             }
         }
