@@ -3,7 +3,7 @@ pipeline {
 
     environment {
                 HOME = "${env.WORKSPACE}"
-            }
+        }
 
     stages {
         stage('Build') {
@@ -26,10 +26,16 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                echo 'Deploying..'
+                script {
+                    echo 'Deploying...'
+                    sh "docker rm -f jenkins-serv || true"
+                    sh "docker run -d -p 8080:8080 --name=jenkins-serv 21127520/my-image:${env.BUILD_ID}"
+                }
             }
         }
-    }
+            
+        }
+    
     post {
         success {
             echo "SUCCESSFUL"
