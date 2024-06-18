@@ -9,7 +9,7 @@
 # CMD ["node", "src/index.js"]
 # EXPOSE 8080
 
-FROM python:3.9-slim-buster
+FROM python:3
 # Set working directory within the container
 WORKDIR /app
 # Copy your Python source code
