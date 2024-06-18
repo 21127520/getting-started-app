@@ -20,4 +20,4 @@ COPY . .
 # Expose port (if your application listens on a specific port)
 EXPOSE 8080
 # Specify the command to run your script
-CMD [ "python", "test.py" ]  
+CMD [ "python", "src/test.py" ]  
